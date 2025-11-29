@@ -70,8 +70,8 @@ export function getEmployeeStatistics(empData) {
   const avgAge = Number((ages.reduce((a,b)=>a+b,0)/ages.length).toFixed(1));
   const ageListSort = [...ages].sort((a,b)=>a-b);
   const medianAge = ageListSort.length % 2 === 0
-    ? (ageListSort[ageListSort.length/2] + ageListSort[ageListSort.length/2-1])/2
-    : ageListSort[Math.floor(ageListSort.length/2)];
+    ? ((ageListSort[ageListSort.length/2] + ageListSort[ageListSort.length/2-1])/2).toFixed(1)
+    : ageListSort[Math.floor(ageListSort.length/2)].toFixed(1);
 
   let load10=0, load20=0, load30=0, load40=0, totalFemLoad=0;
 
@@ -90,10 +90,10 @@ export function getEmployeeStatistics(empData) {
   const sortedByWorkload = [...empData].sort((a,b)=>a.workload-b.workload);
 
   // median workload přímo ze seřazeného pole
-  const middle = Math.floor(sortedByWorkload.length/2);
+  const median = Math.floor(sortedByWorkload.length/2);
   const medianWorkload = sortedByWorkload.length % 2 === 0
-    ? (sortedByWorkload[middle-1].workload + sortedByWorkload[middle].workload)/2
-    : sortedByWorkload[middle].workload;
+    ? (sortedByWorkload[median-1].workload + sortedByWorkload[median].workload)/2
+    : sortedByWorkload[median].workload;
 
   const minAge = Math.floor(Math.min(...ages));
   const maxAge = Math.floor(Math.max(...ages));
@@ -116,6 +116,7 @@ export function getEmployeeStatistics(empData) {
 
 export function main(dtoIn) {
   const employees = generateEmployeeData(dtoIn);
-  return getEmployeeStatistics(employees);
+  const statistics = getEmployeeStatistics(employees); 
+  return statistics;
 }
 console.log(main(dtoIn));
