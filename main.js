@@ -40,15 +40,8 @@ const czechNames = {
   }
 }; // importování jmen
 
-export function main(dtoIn) {
-  const employees = generateEmployeeData(dtoIn);
-  const dtoOut = getEmployeeStatistics(employees);
-
-  return dtoOut;
-}
-console.log(main(dtoIn));
 export function generateEmployeeData(dtoIn) {
-  const dtoOut = [];
+  const employees = [];
   const genders = ['male','female'];
   const workloads = [10,20,30,40]; // možné úvazky
 
@@ -67,12 +60,11 @@ export function generateEmployeeData(dtoIn) {
     const end = new Date(new Date().getFullYear() - dtoIn.age.min,10,25).getTime();
     const birthdate = new Date(start + Math.random()*(end-start)).toISOString();
 
-    dtoOut.push({ gender, birthdate, age, name, surname, workload }); // vznik zaměstnance
+    employees.push({ gender, birthdate, age, name, surname, workload }); // vznik zaměstnance
   }
-  return dtoOut;
+  return employees;
 }
-export function getEmployeeStatistics(employees) {
-  const empData = generateEmployeeData(dtoIn);
+export function getEmployeeStatistics(empData) {
   let load10 = 0;
   let load20 = 0;
   let load30 = 0;
@@ -81,23 +73,26 @@ export function getEmployeeStatistics(employees) {
   let totalFemLoad = 0;
   let medianAge = 0;
   let medianWorkload = 0;
-  const ageListSort = [...empData].sort((a,b) => a.age - b.age);
-  const loadListSort = [...empData].sort((a,b) => a.workload - b.workload);
 
-  for (let i = 0; i < empData.length; i++) {
-    totalAge+=empData[i].age;
-    switch (empData[i].workload) {
+
+  for (const emp of empData) {
+    totalAge+=emp.age;
+    switch (emp.workload) {
       case 10:  load10++; break;
       case 20:  load20++; break;
       case 30:  load30++; break;
       case 40:  load40++; break;
     }
-    if (empData[i].gender === 'female') {
-      totalFemLoad += empData[i].workload;
+    if (emp.gender === 'female') {
+      totalFemLoad += emp.workload;
     }
   }
   const avgFemLoad = (totalFemLoad / empData.filter(emp => emp.gender === 'female').length).toFixed(1);
   const avgAge = (totalAge / empData.length).toFixed(1);
+
+  const ageListSort = [...empData].sort((a,b) => a.age - b.age);
+  const loadListSort = [...empData].sort((a,b) => a.workload - b.workload);
+
   if (empData.length %2 === 0) {
     medianWorkload = ((loadListSort[Math.floor(loadListSort.length/2)].workload + loadListSort[Math.floor(loadListSort.length/2) -1].workload) / 2).toFixed(0); ;
     medianAge = ((ageListSort[Math.floor(ageListSort.length/2)].age + ageListSort[Math.floor(ageListSort.length/2) -1].age) / 2).toFixed(0); ;
@@ -105,7 +100,7 @@ export function getEmployeeStatistics(employees) {
     medianWorkload = (loadListSort[(Math.floor(loadListSort.length/2))].workload).toFixed(0);
     medianAge = (ageListSort[(Math.floor(ageListSort.length/2))].age).toFixed(0);
   }
-  const dtoOut = {
+  return {
     total: empData.length,
     workload10: load10,
     workload20: load20,
@@ -120,5 +115,10 @@ export function getEmployeeStatistics(employees) {
     sortedByWorkload: loadListSort,
 
   };
-  return dtoOut;
 };
+
+export function main(dtoIn) {
+  const employees = generateEmployeeData(dtoIn);
+  return getEmployeeStatistics(employees);
+}
+console.log(main(dtoIn));
