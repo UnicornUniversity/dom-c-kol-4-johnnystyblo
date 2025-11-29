@@ -116,7 +116,6 @@ export function getEmployeeStatistics(empData) {
 
 export function main(dtoIn) {
   const employees = generateEmployeeData(dtoIn);
-  const statistics = getEmployeeStatistics(employees); 
-  return statistics;
+  const dtoOut = getEmployeeStatistics(employees); 
+  return dtoOut;
 }
-console.log(main(dtoIn));
