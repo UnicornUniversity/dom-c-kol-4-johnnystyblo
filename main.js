@@ -53,53 +53,51 @@ export function generateEmployeeData(dtoIn) {
     const name = firstNames[~~(Math.random()*firstNames.length)]; // výběr jména
     const surname = lastNames[~~(Math.random()*lastNames.length)];
     const workload = workloads[~~(Math.random()*workloads.length)]; // výběr úvazku
-    const age = parseInt(~~(Math.random() * (dtoIn.age.max - dtoIn.age.min + 1)) + dtoIn.age.min);// náhodný věk v rozmezí
 
     // náhodné datum narození
     const start = new Date(new Date().getFullYear() - dtoIn.age.max,10,25).getTime();
     const end = new Date(new Date().getFullYear() - dtoIn.age.min,10,25).getTime();
     const birthdate = new Date(start + Math.random()*(end-start)).toISOString();
 
-    employees.push({ gender, birthdate, age, name, surname, workload }); // vznik zaměstnance
+    employees.push({ gender, birthdate, name, surname, workload }); // vznik zaměstnance
   }
   return employees;
 }
 export function getEmployeeStatistics(empData) {
-  let load10 = 0;
-  let load20 = 0;
-  let load30 = 0;
-  let load40 = 0;
-  let totalAge = 0;
-  let totalFemLoad = 0;
-  let medianAge = 0;
-  let medianWorkload = 0;
+  const now = new Date();
 
+  const ages = empData.map(emp => (now - new Date(emp.birthdate)) / (1000*60*60*24*365.25));
+  const avgAge = Number((ages.reduce((a,b)=>a+b,0)/ages.length).toFixed(1));
+  const ageListSort = [...ages].sort((a,b)=>a-b);
+  const medianAge = ageListSort.length % 2 === 0
+    ? (ageListSort[ageListSort.length/2] + ageListSort[ageListSort.length/2-1])/2
+    : ageListSort[Math.floor(ageListSort.length/2)];
+
+  let load10=0, load20=0, load30=0, load40=0, totalFemLoad=0;
 
   for (const emp of empData) {
-    totalAge+=emp.age;
-    switch (emp.workload) {
-      case 10:  load10++; break;
-      case 20:  load20++; break;
-      case 30:  load30++; break;
-      case 40:  load40++; break;
+    switch(emp.workload){
+      case 10: load10++; break;
+      case 20: load20++; break;
+      case 30: load30++; break;
+      case 40: load40++; break;
     }
-    if (emp.gender === 'female') {
-      totalFemLoad += emp.workload;
-    }
+    if(emp.gender==='female') totalFemLoad += emp.workload;
   }
-  const avgFemLoad = Number((totalFemLoad / empData.filter(emp => emp.gender === 'female').length).toFixed(1));
-  const avgAge = Number((totalAge / empData.length).toFixed(1));
 
-  const ageListSort = [...empData].sort((a,b) => a.age - b.age);
-  const loadListSort = [...empData].sort((a,b) => a.workload - b.workload);
+  const avgFemLoad = Number((totalFemLoad / empData.filter(e => e.gender==='female').length).toFixed(1));
 
-  if (empData.length %2 === 0) {
-    medianWorkload = ((loadListSort[Math.floor(loadListSort.length/2)].workload + loadListSort[Math.floor(loadListSort.length/2) -1].workload) / 2).toFixed(0); ;
-    medianAge = ((ageListSort[Math.floor(ageListSort.length/2)].age + ageListSort[Math.floor(ageListSort.length/2) -1].age) / 2).toFixed(0); ;
-  } else {
-    medianWorkload = (loadListSort[(Math.floor(loadListSort.length/2))].workload).toFixed(0);
-    medianAge = (ageListSort[(Math.floor(ageListSort.length/2))].age).toFixed(0);
-  }
+  const sortedByWorkload = [...empData].sort((a,b)=>a.workload-b.workload);
+
+  // median workload přímo ze seřazeného pole
+  const middle = Math.floor(sortedByWorkload.length/2);
+  const medianWorkload = sortedByWorkload.length % 2 === 0
+    ? (sortedByWorkload[middle-1].workload + sortedByWorkload[middle].workload)/2
+    : sortedByWorkload[middle].workload;
+
+  const minAge = Math.floor(Math.min(...ages));
+  const maxAge = Math.floor(Math.max(...ages));
+
   return {
     total: empData.length,
     workload10: load10,
@@ -107,15 +105,14 @@ export function getEmployeeStatistics(empData) {
     workload30: load30,
     workload40: load40,
     averageAge: avgAge,
-    minAge: dtoIn.age.min,
-    maxAge: dtoIn.age.max,
+    minAge: minAge,
+    maxAge: maxAge,
     medianAge: medianAge,
     medianWorkload: medianWorkload,
     averageWomenWorkload: avgFemLoad,
-    sortedByWorkload: loadListSort,
-
+    sortedByWorkload: sortedByWorkload
   };
-};
+}
 
 export function main(dtoIn) {
   const employees = generateEmployeeData(dtoIn);
