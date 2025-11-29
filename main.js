@@ -87,8 +87,8 @@ export function getEmployeeStatistics(empData) {
       totalFemLoad += emp.workload;
     }
   }
-  const avgFemLoad = (totalFemLoad / empData.filter(emp => emp.gender === 'female').length).toFixed(1);
-  const avgAge = (totalAge / empData.length).toFixed(1);
+  const avgFemLoad = Number((totalFemLoad / empData.filter(emp => emp.gender === 'female').length).toFixed(1));
+  const avgAge = Number((totalAge / empData.length).toFixed(1));
 
   const ageListSort = [...empData].sort((a,b) => a.age - b.age);
   const loadListSort = [...empData].sort((a,b) => a.workload - b.workload);
