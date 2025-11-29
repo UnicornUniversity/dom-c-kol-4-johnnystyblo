@@ -41,7 +41,10 @@ const czechNames = {
 }; // importování jmen
 
 export function main(dtoIn) {
-  return dtoOut; 
+  const employees = generateEmployeeData(dtoIn);
+  const dtoOut = getEmployeeStatistics(employees);
+  
+  return dtoOut;
 }
 
 export function generateEmployeeData(dtoIn) {
