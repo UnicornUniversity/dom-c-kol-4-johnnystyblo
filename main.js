@@ -70,8 +70,8 @@ export function getEmployeeStatistics(empData) {
   const avgAge = Number((ages.reduce((a,b)=>a+b,0)/ages.length).toFixed(1));
   const ageListSort = [...ages].sort((a,b)=>a-b);
   const medianAge = ageListSort.length % 2 === 0
-    ? ((ageListSort[ageListSort.length/2] + ageListSort[ageListSort.length/2-1])/2).toFixed(0)
-    : ageListSort[Math.floor(ageListSort.length/2)].toFixed(0);
+    ? Number(((ageListSort[ageListSort.length/2] + ageListSort[ageListSort.length/2-1])/2).toFixed(0))
+    : Number(ageListSort[Math.floor(ageListSort.length/2)].toFixed(0));
 
   let load10=0, load20=0, load30=0, load40=0, totalFemLoad=0;
 
