@@ -96,7 +96,7 @@ export function getEmployeeStatistics(empData) {
     : sortedByWorkload[median].workload;
 
   const minAge = Math.floor(Math.min(...ages));
-  const maxAge = Math.floor(Math.max(...ages)+1);
+  const maxAge = Math.floor(Math.max(...ages));
 
   return {
     total: empData.length,
