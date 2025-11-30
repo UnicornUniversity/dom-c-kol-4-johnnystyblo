@@ -66,7 +66,9 @@ export function generateEmployeeData(dtoIn) {
 export function getEmployeeStatistics(empData) {
   const now = new Date();
 
-  const ages = empData.map(emp => (now - new Date(emp.birthdate)) / (1000*60*60*24*365.25));
+  const ages = empData.map(emp =>
+  Math.trunc((now - new Date(emp.birthdate)) / (1000*60*60*24*365.25))
+);
   const avgAge = Number((ages.reduce((a,b)=>a+b,0)/ages.length).toFixed(1));
   const ageListSort = [...ages].sort((a,b)=>a-b);
   const medianAge = ageListSort.length % 2 === 0
@@ -93,8 +95,6 @@ export function getEmployeeStatistics(empData) {
   const sortedByWorkload = [...empData].sort((a,b)=>a.workload-b.workload);
 
   // median workload přímo ze seřazeného pole
-  const mid = Math.floor(sortedByWorkload.length / 2);
-
   const medianWorkload = sortedByWorkload.length % 2 === 0
   ? Number(Math.trunc(
       (sortedByWorkload[sortedByWorkload.length/2 - 1].workload +
