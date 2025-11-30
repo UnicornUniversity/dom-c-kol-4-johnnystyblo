@@ -67,7 +67,7 @@ export function getEmployeeStatistics(empData) {
   const now = new Date();
 
   const ages = empData.map(emp =>
-  Math.trunc((now - new Date(emp.birthdate)) / (1000*60*60*24*365.25))
+  (now - new Date(emp.birthdate)) / (1000*60*60*24*365.25)
 );
   const avgAge = Number((ages.reduce((a,b)=>a+b,0)/ages.length).toFixed(1));
   const ageListSort = [...ages].sort((a,b)=>a-b);
@@ -76,7 +76,7 @@ export function getEmployeeStatistics(empData) {
       (ageListSort[ageListSort.length/2 - 1] +
        ageListSort[ageListSort.length/2]) / 2
     ))
-  : Number(ageListSort[Math.floor(ageListSort.length/2)]);
+  : Number(Math.trunc(ageListSort[Math.floor(ageListSort.length/2)]));
 
   let load10=0, load20=0, load30=0, load40=0, totalFemLoad=0;
 
@@ -101,8 +101,8 @@ export function getEmployeeStatistics(empData) {
        sortedByWorkload[sortedByWorkload.length/2].workload) / 2
     ))
   : Number(sortedByWorkload[Math.floor(sortedByWorkload.length/2)].workload);
-  const minAge = Math.floor(Math.min(...ages));
-  const maxAge = Math.floor(Math.max(...ages));
+  const minAge = Math.trunc(Math.min(...ages));
+  const maxAge = Math.trunc(Math.max(...ages));
 
   return {
     total: empData.length,
