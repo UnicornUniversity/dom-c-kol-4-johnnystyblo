@@ -115,7 +115,10 @@ export function getEmployeeStatistics(empData) {
   const medianWorkload = Math.trunc(sortedByWorkload.length % 2 === 0 ?
     (sortedByWorkload[sortedByWorkload.length/2-1].workload + sortedByWorkload[sortedByWorkload.length/2].workload)/2 :
     sortedByWorkload[Math.floor(sortedByWorkload.length/2)].workload);
-
+  
+  const minAge = Math.trunc(Math.min(...ages));
+  const maxAge = Math.trunc(Math.max(...ages));
+  
   return {
     total: empData.length,
     workload10: load10,
@@ -123,8 +126,8 @@ export function getEmployeeStatistics(empData) {
     workload30: load30,
     workload40: load40,
     averageAge,
-    minAge: Math.trunc(Math.min(...ages)),
-    maxAge: Math.trunc(Math.max(...ages)),
+    minAge,
+    maxAge,
     medianAge,
     medianWorkload,
     averageWomenWorkload,
