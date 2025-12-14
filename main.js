@@ -1,8 +1,6 @@
 /**
  * @fileoverview
  * Aplikace pro generování zaměstnanců a výpočet základních statistik.
- * Slouží jako semestrální úloha do předmětu Základy softwarového vývoje.
- * Cílem je procvičení práce s funkcemi, objekty, poli a jednoduchými statistikami.
  */
 
 /**
